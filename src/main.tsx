@@ -3,9 +3,10 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
 // Import styles
-import "./index.css"
+import "./index.css";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
+import { SidebarProvider } from "./components/ui/sidebar";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -23,7 +24,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <SidebarProvider>
+        <RouterProvider router={router} />
+      </SidebarProvider>
     </StrictMode>,
   );
 }

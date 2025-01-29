@@ -1,13 +1,15 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import { NavBar } from "./components/NavBar";
+import { MainSidebar } from "./components/MainSidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export const Route = createRootRoute({
   component: () => (
     <>
+      <MainSidebar />
       <div className="flex flex-col w-screen h-screen">
-        <NavBar />
         <main>
+          <SidebarTrigger />
           <Outlet />
         </main>
       </div>
