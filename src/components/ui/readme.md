@@ -1,0 +1,1 @@
+the /components/ui folder should contain only shadcn/ui based files.
