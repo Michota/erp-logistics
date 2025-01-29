@@ -16,17 +16,10 @@ import { Route as rootRoute } from './routes/~__root'
 
 // Create Virtual Routes
 
-const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const TrackIndexLazyImport = createFileRoute('/track/')()
 
 // Create/Update Routes
-
-const AboutLazyRoute = AboutLazyImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/~about.lazy').then((d) => d.Route))
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
@@ -51,13 +44,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/track/': {
       id: '/track/'
       path: '/track'
@@ -72,41 +58,36 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/about': typeof AboutLazyRoute
   '/track': typeof TrackIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/about': typeof AboutLazyRoute
   '/track': typeof TrackIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
-  '/about': typeof AboutLazyRoute
   '/track/': typeof TrackIndexLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/track'
+  fullPaths: '/' | '/track'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/track'
-  id: '__root__' | '/' | '/about' | '/track/'
+  to: '/' | '/track'
+  id: '__root__' | '/' | '/track/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  AboutLazyRoute: typeof AboutLazyRoute
   TrackIndexLazyRoute: typeof TrackIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  AboutLazyRoute: AboutLazyRoute,
   TrackIndexLazyRoute: TrackIndexLazyRoute,
 }
 
@@ -121,15 +102,11 @@ export const routeTree = rootRoute
       "filePath": "~__root.tsx",
       "children": [
         "/",
-        "/about",
         "/track/"
       ]
     },
     "/": {
       "filePath": "~index.lazy.tsx"
-    },
-    "/about": {
-      "filePath": "~about.lazy.tsx"
     },
     "/track/": {
       "filePath": "~track/~index.lazy.tsx"
