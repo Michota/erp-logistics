@@ -1,6 +1,13 @@
-import { Sidebar, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { Link, LinkProps } from "@tanstack/react-router";
-import { ChevronDown, HomeIcon, LucideIcon, RouteIcon } from "lucide-react";
+import { HomeIcon, LucideIcon, RouteIcon } from "lucide-react";
 
 interface SidebarLink extends LinkProps {
   title: string;
@@ -26,12 +33,20 @@ export function MainSidebar() {
 }
 
 function SidebarLink({ icon: Icon, title, to }: SidebarLink) {
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleButtonClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
   return (
-    <SidebarMenuButton>
-      <Icon />
-      <Link to={to} className="[&.active]:font-bold">
+    <Link to={to} className="[&.active]:font-bold">
+      <SidebarMenuButton onClick={handleButtonClick}>
+        <Icon />
         {title}
-      </Link>
-    </SidebarMenuButton>
+      </SidebarMenuButton>
+    </Link>
   );
 }
