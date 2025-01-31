@@ -4,6 +4,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 
 // Import styles
 import "./index.css";
+import "leaflet/dist/leaflet.css";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 import { SidebarProvider } from "./components/ui/sidebar";
