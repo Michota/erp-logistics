@@ -25,8 +25,8 @@ export function MainSidebar() {
       <SidebarHeader>
         Mako
         <SidebarMenu>
-          <SidebarMenuItem>{LINKS.map(SidebarLink)}</SidebarMenuItem>
-        </SidebarMenu>
+          <SidebarMenuItem>{LINKS.map((link) => <SidebarLink {...link} key={[link.from, link.to].join('_')}/>)}</SidebarMenuItem>
+         </SidebarMenu>
       </SidebarHeader>
     </Sidebar>
   );
