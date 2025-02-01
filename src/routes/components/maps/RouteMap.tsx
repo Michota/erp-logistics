@@ -2,19 +2,24 @@ import Leaflet from "@/lib/leafletWithPlugins";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { useMemo } from "react";
 import { RoutingDrawer } from "./RoutingDrawer";
+import { Waypoint } from "@/types/Waypoint";
 
 type Coordinates = [number, number];
 
-interface RouteMapProps {
-  mapPoints: Coordinates[];
+interface RoutePoint extends Waypoint {
+  coordinates: Coordinates;
 }
 
-export function RouteMap({ mapPoints }: RouteMapProps) {
+interface RouteMapProps {
+  points: RoutePoint[];
+}
+
+export function RouteMap({ points }: RouteMapProps) {
   const summedPosition: [number, number] = useMemo(
-    () => mapPoints.reduce((acc, cur) => [acc[0] + cur[0], acc[1] + cur[1]], [0, 0]),
-    [mapPoints],
+    () => points.reduce((acc, cur) => [acc[0] + cur.coordinates[0], acc[1] + cur.coordinates[1]], [0, 0]),
+    [points],
   );
-  const center: [number, number] = [summedPosition[0] / mapPoints.length, summedPosition[1] / mapPoints.length];
+  const center: [number, number] = [summedPosition[0] / points.length, summedPosition[1] / points.length];
 
   return (
     <MapContainer style={{ height: "100%", width: "100%" }} center={center} zoom={10} scrollWheelZoom={true}>
@@ -22,9 +27,9 @@ export function RouteMap({ mapPoints }: RouteMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <RoutingDrawer waypoints={mapPoints.map(Leaflet.latLng)} />
-      {mapPoints.map((point) => (
-        <Marker key={point.join("-")} position={point} />
+      <RoutingDrawer waypoints={points.map(point => Leaflet.latLng(point.coordinates))} />
+      {points.map(({ coordinates }: RoutePoint) => (
+        <Marker key={coordinates.join("-")} position={coordinates} />
       ))}
     </MapContainer>
   );

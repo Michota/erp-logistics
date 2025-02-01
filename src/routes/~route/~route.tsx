@@ -19,7 +19,7 @@ const points: [number, number][] = [
 function RouteComponent() {
   return (
     <div className="w-full h-full bg-red-400">
-      <RouteMap mapPoints={points} />
+      <RouteMap points={points.map((p, index) => ({ id: index.toString(), status: "current", coordinates: p, title: index.toString() }))} />
       <Sheet>
         <SheetTrigger asChild>
           <Button className="rounded-full absolute right-8 bottom-8">
