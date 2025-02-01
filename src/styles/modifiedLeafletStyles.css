@@ -1,0 +1,7 @@
+.leaflet-pane {
+  z-index: 0 /* Originally it was 400 */
+}
+
+.leaflet-top, .leaflet-right, .leaflet-bottom, .leaflet-left {
+    z-index: 1; /* Originally it was 100 */
+}

@@ -6,6 +6,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import "./index.css";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css"
+import "./styles/modifiedLeafletStyles.css"
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 import { SidebarProvider } from "./components/ui/sidebar";
