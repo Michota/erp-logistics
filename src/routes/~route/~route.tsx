@@ -5,7 +5,7 @@ import { LatLng, LatLngExpression, point, routing } from "leaflet";
 import { RouteIcon } from "lucide-react";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import { WaypointsList } from "./~$routeId/components/WaypointsList";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import L from "leaflet";
 import "leaflet-routing-machine";
 import { createControlledLayer } from "react-leaflet/LayersControl";
@@ -21,12 +21,33 @@ const points: [number, number][] = [
   [51.010918206658374, 20.802236114093613],
 ];
 
-const RoutingMachine = ({ waypoints }: { waypoints: LatLng[] }) => {
+const RoutingMachine = ({ waypoints, showHints = false }: { waypoints: LatLng[]; showHints?: boolean }) => {
   const map = useMap();
 
-  const routingControl = routing.control({ addWaypoints: false, waypoints, show: false });
+  const routingControl = useMemo(
+    () =>
+      routing.control({
+        addWaypoints: false,
+        waypoints,
+        showAlternatives: true,
+        // Options below disable the tips from top-right corner
+        show: false,
+        collapsible: showHints,
+        ...(!showHints && {
+          collapseBtnClass: "hidden",
+          containerClassName: "hidden",
+        }),
+      }),
+    [showHints, waypoints],
+  );
 
-  map.addControl(routingControl);
+  useEffect(() => {
+    map.addControl(routingControl);
+
+    return () => {
+      map.removeControl(routingControl);
+    };
+  }, [map, routingControl]);
 
   return null;
 };
@@ -37,11 +58,11 @@ function RouteComponent() {
   const center: [number, number] = [summedPosition[0] / points.length, summedPosition[1] / points.length];
 
   return (
-    <div className="w-[50rem] h-[50rem] bg-red-400">
+    <div className="w-[30rem] h-[30rem] bg-red-400">
       Hello "/route"!
       <MapContainer
         className="mapa"
-        style={{ height: "100%", width: "40rem" }}
+        style={{ height: "100%", width: "100%" }}
         center={center}
         zoom={10}
         scrollWheelZoom={false}
