@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { RouteIcon } from "lucide-react";
-import { useMemo } from "react";
 import { RouteMap } from "../components/maps/RouteMap";
 import { WaypointsList } from "./~$routeId/components/WaypointsList";
 
@@ -18,11 +17,9 @@ const points: [number, number][] = [
 ];
 
 function RouteComponent() {
-
   return (
-    <div className="w-[30rem] h-[30rem] bg-red-400">
-      Hello "/route"! 
-      <RouteMap mapPoints={points}/>
+    <div className="w-full h-full bg-red-400">
+      <RouteMap mapPoints={points} />
       <Sheet>
         <SheetTrigger asChild>
           <Button className="rounded-full absolute right-8 bottom-8">

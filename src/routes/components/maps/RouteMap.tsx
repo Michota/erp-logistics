@@ -17,7 +17,7 @@ export function RouteMap({ mapPoints }: RouteMapProps) {
   const center: [number, number] = [summedPosition[0] / mapPoints.length, summedPosition[1] / mapPoints.length];
 
   return (
-    <MapContainer style={{ height: "100%", width: "100%" }} center={center} zoom={10} scrollWheelZoom={false}>
+    <MapContainer style={{ height: "100%", width: "100%" }} center={center} zoom={10} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
