@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { LatLng, LatLngExpression, point, routing } from "leaflet";
 import { RouteIcon } from "lucide-react";
-import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
+import { useMemo } from "react";
+import { RouteMap } from "../components/maps/RouteMap";
 import { WaypointsList } from "./~$routeId/components/WaypointsList";
-import { useEffect, useMemo } from "react";
-import L from "leaflet";
-import "leaflet-routing-machine";
-import { createControlledLayer } from "react-leaflet/LayersControl";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -21,62 +17,12 @@ const points: [number, number][] = [
   [51.010918206658374, 20.802236114093613],
 ];
 
-const RoutingMachine = ({ waypoints, showHints = false }: { waypoints: LatLng[]; showHints?: boolean }) => {
-  const map = useMap();
-
-  const routingControl = useMemo(
-    () =>
-      routing.control({
-        addWaypoints: false,
-        waypoints,
-        showAlternatives: true,
-        // Options below disable the tips from top-right corner
-        show: false,
-        collapsible: showHints,
-        ...(!showHints && {
-          collapseBtnClass: "hidden",
-          containerClassName: "hidden",
-        }),
-      }),
-    [showHints, waypoints],
-  );
-
-  useEffect(() => {
-    map.addControl(routingControl);
-
-    return () => {
-      map.removeControl(routingControl);
-    };
-  }, [map, routingControl]);
-
-  return null;
-};
-
 function RouteComponent() {
-  const summedPosition: [number, number] = points.reduce((acc, cur) => [acc[0] + cur[0], acc[1] + cur[1]], [0, 0]);
-
-  const center: [number, number] = [summedPosition[0] / points.length, summedPosition[1] / points.length];
 
   return (
     <div className="w-[30rem] h-[30rem] bg-red-400">
-      Hello "/route"!
-      <MapContainer
-        className="mapa"
-        style={{ height: "100%", width: "100%" }}
-        center={center}
-        zoom={10}
-        scrollWheelZoom={false}
-      >
-        <TileLayer
-          zIndex={0}
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <RoutingMachine waypoints={points.map(L.latLng)} />
-        {points.map((point) => (
-          <Marker key={point.join("-")} position={point} />
-        ))}
-      </MapContainer>
+      Hello "/route"! 
+      <RouteMap mapPoints={points}/>
       <Sheet>
         <SheetTrigger asChild>
           <Button className="rounded-full absolute right-8 bottom-8">
