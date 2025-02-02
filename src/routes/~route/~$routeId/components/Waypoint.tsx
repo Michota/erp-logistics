@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { type Waypoint } from "@/types/Waypoint";
 import { CheckIcon } from "lucide-react";
 import React from "react";
+import { getWaypointColor } from "../utils/waypoints";
 
 export type WaypointAction = {
   title: string;
@@ -27,7 +28,7 @@ interface WayPointProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "id" 
 }
 
 export function Waypoint({ actions = [], data }: WayPointProps) {
-  console.log("🚀 ~ file: Waypoint.tsx:30 ~ Waypoint ~ actions:", actions)
+  console.log("🚀 ~ file: Waypoint.tsx:30 ~ Waypoint ~ actions:", actions);
   if (actions.length <= 0) {
     return <BasicWaypoint data={data} />;
   } else {
@@ -64,11 +65,7 @@ function BasicWaypoint({ index, data: { status, title }, className, ...props }: 
       <div
         className={cn(
           "waypoint-status-indicator",
-          {
-            "bg-gray-300": status === "passed",
-            "bg-yellow-300": status === "current",
-            "bg-blue-300": status === "upcoming",
-          },
+          `bg-${getWaypointColor(status)}-300`,
           "rounded-full aspect-square min-w-6 text-background flex items-center justify-center",
         )}
       >

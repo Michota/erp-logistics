@@ -4,6 +4,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { RouteIcon } from "lucide-react";
 import { RouteMap } from "../components/maps/RouteMap";
 import { WaypointsList } from "./~$routeId/components/WaypointsList";
+import { WaypointStatus } from "@/types/Waypoint";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -19,7 +20,14 @@ const points: [number, number][] = [
 function RouteComponent() {
   return (
     <div className="w-full h-full bg-red-400">
-      <RouteMap points={points.map((p, index) => ({ id: index.toString(), status: "current", coordinates: p, title: index.toString() }))} />
+      <RouteMap
+        points={points.map((p, index) => ({
+          id: index.toString(),
+          status: index > 0 ? WaypointStatus.CURRENT : WaypointStatus.UPCOMING,
+          coordinates: p,
+          title: index.toString(),
+        }))}
+      />
       <Sheet>
         <SheetTrigger asChild>
           <Button className="rounded-full absolute right-8 bottom-8">
