@@ -1,5 +1,5 @@
 import Leaflet, { CreateMarker } from "@/lib/leafletWithPlugins";
-import { createWaypointIcon } from "@/routes/~route/~$routeId/consts/WaypointIcons";
+import { createWaypointIcon } from "@/routes/~route/~$routeId/consts/waypointIcons";
 import { Waypoint } from "@/types/waypoint";
 import { useEffect, useMemo } from "react";
 import { useMap } from "react-leaflet";

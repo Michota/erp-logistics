@@ -21,24 +21,6 @@ export function RouteMap({ waypoints }: RouteMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <RoutingDrawer waypoints={waypoints} />
-      {/* {points.map(({ coordinates, status, title }: RoutePoint) => (
-        <Marker
-          title={title}
-          alt={title}
-          draggable={false}
-          interactive={false}
-          
-          icon={
-            new Icon({
-              iconUrl:
-                "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/refs/heads/master/img/marker-icon-yellow.png",
-            })
-          }
-          
-          key={coordinates.join("-")}
-          position={coordinates}
-        />
-      ))} */}
     </MapContainer>
   );
 }
