@@ -1,8 +1,9 @@
 import Leaflet from "@/lib/leafletWithPlugins";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { useMemo } from "react";
-import { RoutingDrawer } from "./RoutingDrawer";
+import { createLeafletIcon } from "@/routes/~route/~$routeId/consts/WaypointIcons";
 import { Waypoint } from "@/types/Waypoint";
+import { useMemo } from "react";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { RoutingDrawer } from "./RoutingDrawer";
 
 type Coordinates = [number, number];
 
@@ -27,9 +28,15 @@ export function RouteMap({ points }: RouteMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <RoutingDrawer waypoints={points.map(point => Leaflet.latLng(point.coordinates))} />
-      {points.map(({ coordinates }: RoutePoint) => (
-        <Marker key={coordinates.join("-")} position={coordinates} />
+      <RoutingDrawer waypoints={points.map((point) => Leaflet.latLng(point.coordinates))} />
+      {points.map(({ coordinates, status, title }: RoutePoint) => (
+        <Marker
+          title={title}
+          alt={title}
+          icon={createLeafletIcon(status)}
+          key={coordinates.join("-")}
+          position={coordinates}
+        />
       ))}
     </MapContainer>
   );
