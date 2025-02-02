@@ -1,12 +1,6 @@
-export enum WaypointStatus {
-  PASSED = "passed",
-  UPCOMING = "upcoming",
-  CURRENT = "current",
-}
+import { RoutePointStatus } from "./route";
+import { RoutePoint } from "./routePoints";
 
-export interface Waypoint {
-  id: string;
-  title: string;
-  status: WaypointStatus;
-  index?: number;
+export interface Waypoint extends RoutePoint {
+  coordinates: [lat: number, lng: number];
 }

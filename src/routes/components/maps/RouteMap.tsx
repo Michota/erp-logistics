@@ -1,26 +1,18 @@
-import Leaflet from "@/lib/leafletWithPlugins";
-import { createLeafletIcon } from "@/routes/~route/~$routeId/consts/WaypointIcons";
-import { Waypoint } from "@/types/Waypoint";
+import { Waypoint } from "@/types/waypoint";
 import { useMemo } from "react";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import { RoutingDrawer } from "./RoutingDrawer";
 
-type Coordinates = [number, number];
-
-interface RoutePoint extends Waypoint {
-  coordinates: Coordinates;
-}
-
 interface RouteMapProps {
-  points: RoutePoint[];
+  waypoints: Waypoint[];
 }
 
-export function RouteMap({ points }: RouteMapProps) {
+export function RouteMap({ waypoints }: RouteMapProps) {
   const summedPosition: [number, number] = useMemo(
-    () => points.reduce((acc, cur) => [acc[0] + cur.coordinates[0], acc[1] + cur.coordinates[1]], [0, 0]),
-    [points],
+    () => waypoints.reduce((acc, cur) => [acc[0] + cur.coordinates[0], acc[1] + cur.coordinates[1]], [0, 0]),
+    [waypoints],
   );
-  const center: [number, number] = [summedPosition[0] / points.length, summedPosition[1] / points.length];
+  const center: [number, number] = [summedPosition[0] / waypoints.length, summedPosition[1] / waypoints.length];
 
   return (
     <MapContainer style={{ height: "100%", width: "100%" }} center={center} zoom={10} scrollWheelZoom={true}>
@@ -28,16 +20,25 @@ export function RouteMap({ points }: RouteMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <RoutingDrawer waypoints={points.map((point) => Leaflet.latLng(point.coordinates))} />
-      {points.map(({ coordinates, status, title }: RoutePoint) => (
+      <RoutingDrawer waypoints={waypoints} />
+      {/* {points.map(({ coordinates, status, title }: RoutePoint) => (
         <Marker
           title={title}
           alt={title}
-          icon={createLeafletIcon(status)}
+          draggable={false}
+          interactive={false}
+          
+          icon={
+            new Icon({
+              iconUrl:
+                "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/refs/heads/master/img/marker-icon-yellow.png",
+            })
+          }
+          
           key={coordinates.join("-")}
           position={coordinates}
         />
-      ))}
+      ))} */}
     </MapContainer>
   );
 }

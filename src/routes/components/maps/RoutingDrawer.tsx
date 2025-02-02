@@ -1,4 +1,7 @@
-import { LatLng, routing } from "leaflet";
+import Leaflet from "@/lib/leafletWithPlugins";
+import { createWaypointIcon } from "@/routes/~route/~$routeId/consts/WaypointIcons";
+import { Waypoint } from "@/types/waypoint";
+import { RoutePointStatus } from "@/types/route";
 import { useMemo, useEffect } from "react";
 import { useMap } from "react-leaflet";
 
@@ -14,14 +17,28 @@ import { useMap } from "react-leaflet";
 
 // TODO: change router: https://www.liedman.net/leaflet-routing-machine/tutorials/alternative-routers/
 
-export const RoutingDrawer = ({ waypoints, showHints = false }: { waypoints: LatLng[]; showHints?: boolean }) => {
+interface RoutingDrawerProps {
+  waypoints: Waypoint[];
+  showHints?: boolean;
+  markerOptions?: Parameters<NonNullable<Leaflet.Routing.RoutingControlOptions["createMarker"]>>[1];
+}
+
+export const RoutingDrawer = ({ waypoints, showHints = false, markerOptions }: RoutingDrawerProps) => {
   const map = useMap();
 
   const routingControl = useMemo(
     () =>
-      routing.control({
+      Leaflet.routing.control({
+        createMarker: (index, waypoint) => {
+          return Leaflet.marker(waypoint.latLng, {
+            draggable: false,
+            icon: createWaypointIcon(waypoints[index].status),
+            ...markerOptions,
+          });
+        },
+
         addWaypoints: false,
-        waypoints,
+        waypoints: waypoints.map((waypoint) => Leaflet.latLng(waypoint.coordinates)),
         showAlternatives: true,
         // Options below disable the tips from top-right corner
         show: false,
@@ -31,7 +48,7 @@ export const RoutingDrawer = ({ waypoints, showHints = false }: { waypoints: Lat
           containerClassName: "hidden",
         }),
       }),
-    [showHints, waypoints],
+    [markerOptions, showHints, waypoints],
   );
 
   useEffect(() => {

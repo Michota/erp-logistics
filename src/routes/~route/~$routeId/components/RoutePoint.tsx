@@ -10,32 +10,31 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
-import { type Waypoint } from "@/types/Waypoint";
+import { type RoutePoint } from "@/types/routePoints";
 import { CheckIcon } from "lucide-react";
 import React from "react";
-import { getWaypointColor } from "../utils/waypoints";
+import { getPointStatusColor } from "../utils/getPointStatusColor";
 
-export type WaypointAction = {
+export type RoutePointAction = {
   title: string;
   description: string;
-  action: (waypoint: Waypoint) => void;
+  action: (point: RoutePoint) => void;
 };
 
-interface WayPointProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "id" | "title"> {
-  data: Waypoint;
+interface RoutePointProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "id" | "title"> {
+  data: RoutePoint;
   index?: number;
-  actions?: WaypointAction[];
+  actions?: RoutePointAction[];
 }
 
-export function Waypoint({ actions = [], data }: WayPointProps) {
-  console.log("🚀 ~ file: Waypoint.tsx:30 ~ Waypoint ~ actions:", actions);
+export function RoutePoint({ actions = [], data }: RoutePointProps) {
   if (actions.length <= 0) {
-    return <BasicWaypoint data={data} />;
+    return <BasicRoutePoint data={data} />;
   } else {
     return (
       <Drawer>
         <DrawerTrigger asChild>
-          <BasicWaypoint data={data} />
+          <BasicRoutePoint data={data} />
         </DrawerTrigger>
         <DrawerContent className="px-6 gap-4">
           <DrawerHeader>
@@ -59,13 +58,13 @@ export function Waypoint({ actions = [], data }: WayPointProps) {
   }
 }
 
-function BasicWaypoint({ index, data: { status, title }, className, ...props }: Omit<WayPointProps, "actions">) {
+function BasicRoutePoint({ index, data: { status, title }, className, ...props }: Omit<RoutePointProps, "actions">) {
   return (
     <div className={cn("flex justify-start items-center gap-2 select-none", className)} {...props}>
       <div
         className={cn(
-          "waypoint-status-indicator",
-          `bg-${getWaypointColor(status)}-300`,
+          "route-point-status-indicator",
+          `bg-${getPointStatusColor(status)}-300`,
           "rounded-full aspect-square min-w-6 text-background flex items-center justify-center",
         )}
       >

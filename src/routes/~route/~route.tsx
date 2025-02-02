@@ -3,8 +3,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { RouteIcon } from "lucide-react";
 import { RouteMap } from "../components/maps/RouteMap";
-import { WaypointsList } from "./~$routeId/components/WaypointsList";
-import { WaypointStatus } from "@/types/Waypoint";
+import { RoutePointList } from "./~$routeId/components/RoutePointList";
+import { RoutePointStatus } from "@/types/routePoints";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -21,9 +21,9 @@ function RouteComponent() {
   return (
     <div className="w-full h-full bg-red-400">
       <RouteMap
-        points={points.map((p, index) => ({
+        waypoints={points.map((p, index) => ({
           id: index.toString(),
-          status: index > 0 ? WaypointStatus.CURRENT : WaypointStatus.UPCOMING,
+          status: index > 0 ? RoutePointStatus.CURRENT : RoutePointStatus.UPCOMING,
           coordinates: p,
           title: index.toString(),
         }))}
@@ -38,15 +38,15 @@ function RouteComponent() {
           <SheetHeader>
             <SheetTitle>Waypoints</SheetTitle>
             <SheetDescription>
-              <WaypointsList
-                waypointActions={[
+              <RoutePointList
+                routePointActions={[
                   { action: (waypoint) => alert(waypoint.title), description: "desc", title: "action 1" },
                   { action: (waypoint) => alert(waypoint.title), description: "desc", title: "action 2" },
                 ]}
-                waypoints={[
-                  { id: "1", title: "Waypoint 1", status: "passed" },
-                  { id: "2", title: "Waypoint 2", status: "current" },
-                  { id: "3", title: "Waypoint 3", status: "upcoming" },
+                routePoints={[
+                  { id: "1", title: "Waypoint 1", status: RoutePointStatus.PASSED },
+                  { id: "2", title: "Waypoint 2", status: RoutePointStatus.CURRENT },
+                  { id: "3", title: "Waypoint 3", status: RoutePointStatus.UPCOMING },
                 ]}
               />
             </SheetDescription>
