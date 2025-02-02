@@ -1,4 +1,4 @@
-import Leaflet from "@/lib/leafletWithPlugins";
+import Leaflet, { CreateMarker } from "@/lib/leafletWithPlugins";
 import { createWaypointIcon } from "@/routes/~route/~$routeId/consts/WaypointIcons";
 import { Waypoint } from "@/types/waypoint";
 import { RoutePointStatus } from "@/types/route";
@@ -20,7 +20,7 @@ import { useMap } from "react-leaflet";
 interface RoutingDrawerProps {
   waypoints: Waypoint[];
   showHints?: boolean;
-  markerOptions?: Parameters<NonNullable<Leaflet.Routing.RoutingControlOptions["createMarker"]>>[1];
+  markerOptions?: Parameters<CreateMarker>[1]
 }
 
 export const RoutingDrawer = ({ waypoints, showHints = false, markerOptions }: RoutingDrawerProps) => {
