@@ -16,25 +16,29 @@ import { useMap } from "react-leaflet";
 
 // TODO: change router: https://www.liedman.net/leaflet-routing-machine/tutorials/alternative-routers/
 
+type MarkerOptions = Parameters<CreateMarker>[1];
+
 interface RoutingDrawerProps {
   waypoints: Waypoint[];
   showHints?: boolean;
-  markerOptions?: Parameters<CreateMarker>[1]
+  markersOptions?: MarkerOptions;
 }
 
-export const RoutingDrawer = ({ waypoints, showHints = false, markerOptions }: RoutingDrawerProps) => {
+const createMarkerWithTooltip = (waypoint: Waypoint, options?: MarkerOptions) =>
+  Leaflet.marker(waypoint.coordinates, {
+    draggable: false,
+    icon: createWaypointIcon(waypoint.status),
+
+    ...options,
+  }).bindTooltip(waypoint.title, { permanent: true });
+
+export const RoutingDrawer = ({ waypoints, showHints = false, markersOptions }: RoutingDrawerProps) => {
   const map = useMap();
 
   const routingControl = useMemo(
     () =>
       Leaflet.routing.control({
-        createMarker: (index, waypoint) => {
-          return Leaflet.marker(waypoint.latLng, {
-            draggable: false,
-            icon: createWaypointIcon(waypoints[index].status),
-            ...markerOptions,
-          });
-        },
+        createMarker: (index) => createMarkerWithTooltip(waypoints[index], markersOptions),
 
         addWaypoints: false,
         waypoints: waypoints.map((waypoint) => Leaflet.latLng(waypoint.coordinates)),
@@ -47,7 +51,7 @@ export const RoutingDrawer = ({ waypoints, showHints = false, markerOptions }: R
           containerClassName: "hidden",
         }),
       }),
-    [markerOptions, showHints, waypoints],
+    [markersOptions, showHints, waypoints],
   );
 
   useEffect(() => {
