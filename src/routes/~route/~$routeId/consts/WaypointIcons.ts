@@ -1,7 +1,7 @@
 import Leaflet from "@/lib/leafletWithPlugins";
-import { RoutePointStatus } from "@/types/route";
 import { IconOptions } from "leaflet";
 import { getPointStatusColor } from "../utils/getPointStatusColor";
+import { RoutePointStatus } from "@/types/routePoints";
 
 const IMAGE_REPOSITORY = "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/refs/heads/master/img";
 
