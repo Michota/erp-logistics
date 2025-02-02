@@ -1,10 +1,6 @@
-import { cn } from "@/lib/utils";
 import { RoutePointStatus } from "@/types/routePoints";
+import { STATUS_POINT_COLOR } from "../consts/statusPointColors";
 
 export function getPointStatusColor(status: RoutePointStatus) {
-  return cn({
-    gray: status === RoutePointStatus.PASSED,
-    yellow: status === RoutePointStatus.CURRENT,
-    blue: status === RoutePointStatus.UPCOMING,
-  });
+  return STATUS_POINT_COLOR[status.toUpperCase() as Uppercase<typeof status>];
 }
