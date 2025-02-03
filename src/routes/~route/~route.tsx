@@ -4,7 +4,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { RouteIcon, X } from "lucide-react";
 import { RoutePointList } from "./~$routeId/components/RoutePointList";
 import { RoutePointStatus } from "@/types/routePoints";
-import { APIProvider, Map, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, Marker, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { Waypoint } from "@/types/waypoint";
 
@@ -12,26 +12,46 @@ export const Route = createFileRoute("/route")({
   component: RouteComponent,
 });
 
-const points: [number, number][] = [
+const points = [
   [50.95857599800388, 20.25370827892464],
   [50.80904029689233, 20.34840150520644],
   [50.86683508347538, 20.62555240399504],
   [51.010918206658374, 20.802236114093613],
-];
+].map((p) => ({ lat: p[0], lng: p[1] }));
+
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function RouteComponent() {
+  const [waypoints, setWaypoints] = useState(points);
   return (
     <div className="w-full h-full bg-red-400">
       <APIProvider apiKey={apiKey}>
         <Map
           style={{ width: "100%", height: "100%" }}
-          defaultCenter={{ lat: points[0][0], lng: points[0][1] }}
+          defaultCenter={waypoints[0]}
           defaultZoom={10}
           gestureHandling={"greedy"}
           disableDefaultUI={true}
         >
-          <MapRoutes waypoints={points} />
+          {waypoints.map((point, index) => (
+            <Marker
+              position={point}
+              draggable
+              onDragEnd={({ latLng }) => {
+                if (!latLng) {
+                  return;
+                }
+
+                setWaypoints((current) => {
+                  const newWaypoints = [...current];
+                  newWaypoints[index].lat = latLng.lat();
+                  newWaypoints[index].lng = latLng.lng();
+                  return newWaypoints;
+                });
+              }}
+            />
+          ))}
+          <MapRoutes waypoints={waypoints} />
         </Map>
       </APIProvider>
       <Sheet>
@@ -64,10 +84,10 @@ function RouteComponent() {
   );
 }
 
-function MapRoutes({ waypoints }: { waypoints: [number, number][] }) {
+function MapRoutes({ waypoints }: { waypoints: typeof points }) {
+  console.log("🚀 ~ MapRoutes ~ waypoints:", waypoints);
   const instance = useMap();
   const [direction, setDirection] = useState<google.maps.DirectionsResult>();
-  const [directionsRenderer, setDirectionRenderer] = useState<google.maps.DirectionsRenderer>();
   if (!instance) {
     throw new Error("There is no map instance!");
   }
@@ -79,15 +99,17 @@ function MapRoutes({ waypoints }: { waypoints: [number, number][] }) {
       return;
     }
 
-    const googleWaypoints = waypoints.map(([lat, lng]) => ({ location: { lat, lng } }));
+    const googleWaypoints = waypoints.map(({ lat, lng }) => ({ location: { lat, lng } }));
 
     const directionServices = new routesLibrary.DirectionsService();
     directionServices
       .route({
-        waypoints: googleWaypoints,
+        waypoints: googleWaypoints.slice(1, googleWaypoints.length - 1),
         destination: googleWaypoints.at(-1)!.location,
+
         origin: googleWaypoints[0],
         travelMode: routesLibrary.TravelMode.DRIVING,
+        optimizeWaypoints: true,
       })
       .then((result) => setDirection(result));
   }, [routesLibrary, waypoints]);
@@ -97,8 +119,16 @@ function MapRoutes({ waypoints }: { waypoints: [number, number][] }) {
       return;
     }
 
-    const directionsRenderer = new routesLibrary.DirectionsRenderer({ map: instance, directions: direction });
-    setDirectionRenderer(directionsRenderer);
+    const directionsRenderer = new routesLibrary.DirectionsRenderer({
+      directions: direction,
+      polylineOptions: { strokeColor: "#ff00ff" },
+      suppressMarkers: true,
+      // markerOptions: { draggable: true },
+    })
+
+    directionsRenderer.setMap(instance)
+
+    return () => directionsRenderer.setMap(null)
   }, [direction, instance, routesLibrary]);
 
   return null;
