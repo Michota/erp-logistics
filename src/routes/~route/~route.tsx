@@ -1,12 +1,12 @@
+import { GoogleMapsMap } from "@/components/maps/GoogleMapsMap";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { RouteIcon, X } from "lucide-react";
-import { RoutePointList } from "./~$routeId/components/RoutePointList";
 import { RoutePointStatus } from "@/types/routePoints";
-import { APIProvider, Map, Marker, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useEffect, useState } from "react";
-import { Waypoint } from "@/types/waypoint";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import { RouteIcon } from "lucide-react";
+import { useState } from "react";
+import { RoutePointList } from "./~$routeId/components/RoutePointList";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -17,7 +17,12 @@ const points = [
   [50.80904029689233, 20.34840150520644],
   [50.86683508347538, 20.62555240399504],
   [51.010918206658374, 20.802236114093613],
-].map((p) => ({ lat: p[0], lng: p[1] }));
+].map((w, i) => ({
+  coordinates: { lat: w[0], lng: w[1] },
+  id: i.toString(),
+  title: Math.random().toString(),
+  status: i > 0 ? RoutePointStatus.UPCOMING : RoutePointStatus.PASSED,
+}));
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -26,33 +31,22 @@ function RouteComponent() {
   return (
     <div className="w-full h-full bg-red-400">
       <APIProvider apiKey={apiKey}>
-        <Map
-          style={{ width: "100%", height: "100%" }}
-          defaultCenter={waypoints[0]}
-          defaultZoom={10}
-          gestureHandling={"greedy"}
-          disableDefaultUI={true}
-        >
-          {waypoints.map((point, index) => (
-            <Marker
-              position={point}
-              draggable
-              onDragEnd={({ latLng }) => {
-                if (!latLng) {
-                  return;
-                }
+        <GoogleMapsMap
+          waypoints={waypoints}
+          onWaypointChange={(updatedWaypoint) =>
+            setWaypoints((currentWaypoints) => {
+              const newWaypoints = [...currentWaypoints];
+              console.log("🚀 ~ setWaypoints ~ newWaypoints:", newWaypoints);
+              const updatedWaypointIndex = newWaypoints.findIndex((waypoint) => waypoint.id === updatedWaypoint.id);
+              if (updatedWaypointIndex === -1) {
+                throw new Error("There is no updated index");
+              }
 
-                setWaypoints((current) => {
-                  const newWaypoints = [...current];
-                  newWaypoints[index].lat = latLng.lat();
-                  newWaypoints[index].lng = latLng.lng();
-                  return newWaypoints;
-                });
-              }}
-            />
-          ))}
-          <MapRoutes waypoints={waypoints} />
-        </Map>
+              newWaypoints[updatedWaypointIndex] = updatedWaypoint;
+              return newWaypoints;
+            })
+          }
+        />
       </APIProvider>
       <Sheet>
         <SheetTrigger asChild>
@@ -82,54 +76,4 @@ function RouteComponent() {
       <Outlet />
     </div>
   );
-}
-
-function MapRoutes({ waypoints }: { waypoints: typeof points }) {
-  console.log("🚀 ~ MapRoutes ~ waypoints:", waypoints);
-  const instance = useMap();
-  const [direction, setDirection] = useState<google.maps.DirectionsResult>();
-  if (!instance) {
-    throw new Error("There is no map instance!");
-  }
-
-  const routesLibrary = useMapsLibrary("routes");
-
-  useEffect(() => {
-    if (!routesLibrary) {
-      return;
-    }
-
-    const googleWaypoints = waypoints.map(({ lat, lng }) => ({ location: { lat, lng } }));
-
-    const directionServices = new routesLibrary.DirectionsService();
-    directionServices
-      .route({
-        waypoints: googleWaypoints.slice(1, googleWaypoints.length - 1),
-        destination: googleWaypoints.at(-1)!.location,
-
-        origin: googleWaypoints[0],
-        travelMode: routesLibrary.TravelMode.DRIVING,
-        optimizeWaypoints: true,
-      })
-      .then((result) => setDirection(result));
-  }, [routesLibrary, waypoints]);
-
-  useEffect(() => {
-    if (!routesLibrary) {
-      return;
-    }
-
-    const directionsRenderer = new routesLibrary.DirectionsRenderer({
-      directions: direction,
-      polylineOptions: { strokeColor: "#ff00ff" },
-      suppressMarkers: true,
-      // markerOptions: { draggable: true },
-    })
-
-    directionsRenderer.setMap(instance)
-
-    return () => directionsRenderer.setMap(null)
-  }, [direction, instance, routesLibrary]);
-
-  return null;
 }
