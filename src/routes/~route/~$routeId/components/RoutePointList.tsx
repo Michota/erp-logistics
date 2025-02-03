@@ -1,6 +1,5 @@
-import { type Waypoint } from "@/types/waypoint";
-import { RoutePointAction, RoutePoint } from "./RoutePoint";
 import { type RoutePoint as RoutePointType } from "@/types/routePoints";
+import { RoutePoint, RoutePointAction } from "./RoutePoint";
 
 interface RoutePointList {
   routePoints: RoutePointType[];
