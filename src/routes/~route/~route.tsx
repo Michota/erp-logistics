@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { RouteIcon } from "lucide-react";
-import { RouteMap } from "../components/maps/RouteMap";
+import { RouteIcon, X } from "lucide-react";
 import { RoutePointList } from "./~$routeId/components/RoutePointList";
 import { RoutePointStatus } from "@/types/routePoints";
+import { APIProvider, Map, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useEffect, useState } from "react";
+import { Waypoint } from "@/types/waypoint";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -16,18 +18,22 @@ const points: [number, number][] = [
   [50.86683508347538, 20.62555240399504],
   [51.010918206658374, 20.802236114093613],
 ];
+const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function RouteComponent() {
   return (
     <div className="w-full h-full bg-red-400">
-      <RouteMap
-        waypoints={points.map((p, index) => ({
-          id: index.toString(),
-          status: index > 0 ? RoutePointStatus.CURRENT : RoutePointStatus.UPCOMING,
-          coordinates: p,
-          title: index.toString(),
-        }))}
-      />
+      <APIProvider apiKey={apiKey}>
+        <Map
+          style={{ width: "100%", height: "100%" }}
+          defaultCenter={{ lat: points[0][0], lng: points[0][1] }}
+          defaultZoom={10}
+          gestureHandling={"greedy"}
+          disableDefaultUI={true}
+        >
+          <MapRoutes waypoints={points} />
+        </Map>
+      </APIProvider>
       <Sheet>
         <SheetTrigger asChild>
           <Button className="rounded-full absolute right-8 bottom-8">
@@ -56,4 +62,44 @@ function RouteComponent() {
       <Outlet />
     </div>
   );
+}
+
+function MapRoutes({ waypoints }: { waypoints: [number, number][] }) {
+  const instance = useMap();
+  const [direction, setDirection] = useState<google.maps.DirectionsResult>();
+  const [directionsRenderer, setDirectionRenderer] = useState<google.maps.DirectionsRenderer>();
+  if (!instance) {
+    throw new Error("There is no map instance!");
+  }
+
+  const routesLibrary = useMapsLibrary("routes");
+
+  useEffect(() => {
+    if (!routesLibrary) {
+      return;
+    }
+
+    const googleWaypoints = waypoints.map(([lat, lng]) => ({ location: { lat, lng } }));
+
+    const directionServices = new routesLibrary.DirectionsService();
+    directionServices
+      .route({
+        waypoints: googleWaypoints,
+        destination: googleWaypoints.at(-1)!.location,
+        origin: googleWaypoints[0],
+        travelMode: routesLibrary.TravelMode.DRIVING,
+      })
+      .then((result) => setDirection(result));
+  }, [routesLibrary, waypoints]);
+
+  useEffect(() => {
+    if (!routesLibrary) {
+      return;
+    }
+
+    const directionsRenderer = new routesLibrary.DirectionsRenderer({ map: instance, directions: direction });
+    setDirectionRenderer(directionsRenderer);
+  }, [direction, instance, routesLibrary]);
+
+  return null;
 }
