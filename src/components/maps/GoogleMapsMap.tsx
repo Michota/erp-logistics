@@ -6,9 +6,10 @@ import { MapRoutes } from "./MapRoutes";
 interface GoogleMapsMapProps<W extends Waypoint = Waypoint> {
   waypoints: W[];
   onWaypointChange: (updatedWaypoint: W) => void;
+  onWaypointClick: (waypoint: W, event: google.maps.MapMouseEvent) => void;
 }
 
-function GoogleMapsMap<W extends Waypoint>({ waypoints, onWaypointChange }: GoogleMapsMapProps<W>) {
+function GoogleMapsMap<W extends Waypoint>({ waypoints, onWaypointChange, onWaypointClick }: GoogleMapsMapProps<W>) {
   const handleMarkerDragEnd = (waypoint: W, newCoordinates: W["coordinates"]) => {
     onWaypointChange({ ...waypoint, coordinates: newCoordinates });
   };
@@ -43,6 +44,7 @@ function GoogleMapsMap<W extends Waypoint>({ waypoints, onWaypointChange }: Goog
           label={{ text: point.title }}
           position={point.coordinates}
           draggable
+          onClick={(event) => onWaypointClick(point, event)}
           onDragEnd={({ latLng }) => {
             if (!latLng) {
               return;
