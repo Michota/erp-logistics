@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { type RoutePoint } from "@/types/routePoints";
 import { CheckIcon } from "lucide-react";
 import React from "react";
-import { getPointStatusColor } from "../utils/getPointStatusColor";
+import { STATUS_POINT_COLOR } from "../consts/statusPointColors";
 
 export type RoutePointAction = {
   title: string;
@@ -64,7 +64,7 @@ function BasicRoutePoint({ index, data: { status, title }, className, ...props }
       <div
         className={cn(
           "route-point-status-indicator",
-          `bg-${getPointStatusColor(status)}-300`,
+          `bg-${STATUS_POINT_COLOR[status.toUpperCase()]}-300`,
           "rounded-full aspect-square min-w-6 text-background flex items-center justify-center",
         )}
       >

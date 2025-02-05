@@ -1,6 +1,5 @@
-import { RoutePointStatus } from "@/types/routePoints";
 
-export const STATUS_POINT_COLOR: Record<keyof typeof RoutePointStatus, string> = {
+export const STATUS_POINT_COLOR = {
   PASSED: "gray",
   CURRENT: "yellow",
   UPCOMING: "blue",
