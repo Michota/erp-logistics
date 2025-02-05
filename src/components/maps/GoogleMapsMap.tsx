@@ -36,6 +36,7 @@ function GoogleMapsMap<W extends Waypoint>({
 
   return (
     <Map
+      reuseMaps
       colorScheme={ColorScheme.FOLLOW_SYSTEM}
       style={{ width: "100%", height: "100%" }}
       defaultCenter={center}
@@ -67,3 +68,4 @@ function GoogleMapsMap<W extends Waypoint>({
 }
 
 export { GoogleMapsMap };
+
