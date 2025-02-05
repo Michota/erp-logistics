@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { RoutePointStatus } from "@/types/routePoints";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { APIProvider } from "@vis.gl/react-google-maps";
 import { RouteIcon } from "lucide-react";
 import { useState } from "react";
 import { RoutePointList } from "./~$routeId/components/RoutePointList";
@@ -24,13 +23,11 @@ const points = [
   status: i > 0 ? RoutePointStatus.UPCOMING : RoutePointStatus.PASSED,
 }));
 
-const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function RouteComponent() {
   const [waypoints, setWaypoints] = useState(points);
   return (
     <div className="w-full h-full bg-red-400">
-      <APIProvider apiKey={apiKey}>
         <GoogleMapsMap
           waypoints={waypoints}
           onWaypointChange={(updatedWaypoint) =>
@@ -47,7 +44,6 @@ function RouteComponent() {
             })
           }
         />
-      </APIProvider>
       <Sheet>
         <SheetTrigger asChild>
           <Button className="rounded-full absolute right-8 bottom-8">
