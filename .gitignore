@@ -23,4 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment settings
 .env
+
+# Test coverage folder
+coverage/
