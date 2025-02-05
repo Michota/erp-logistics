@@ -5,13 +5,19 @@ import { MapRoutes } from "./MapRoutes";
 
 interface GoogleMapsMapProps<W extends Waypoint = Waypoint> {
   waypoints: W[];
-  onWaypointChange: (updatedWaypoint: W) => void;
-  onWaypointClick: (waypoint: W, event: google.maps.MapMouseEvent) => void;
+  onWaypointChange?: (updatedWaypoint: W) => void;
+  onWaypointClick?: (waypoint: W, event: google.maps.MapMouseEvent) => void;
+  allowWaypointsDragging?: boolean;
 }
 
-function GoogleMapsMap<W extends Waypoint>({ waypoints, onWaypointChange, onWaypointClick }: GoogleMapsMapProps<W>) {
+function GoogleMapsMap<W extends Waypoint>({
+  waypoints,
+  onWaypointChange,
+  onWaypointClick,
+  allowWaypointsDragging = false,
+}: GoogleMapsMapProps<W>) {
   const handleMarkerDragEnd = (waypoint: W, newCoordinates: W["coordinates"]) => {
-    onWaypointChange({ ...waypoint, coordinates: newCoordinates });
+    onWaypointChange?.({ ...waypoint, coordinates: newCoordinates });
   };
 
   const summedPosition = useMemo(
@@ -43,8 +49,8 @@ function GoogleMapsMap<W extends Waypoint>({ waypoints, onWaypointChange, onWayp
           key={point.id}
           label={{ text: point.title }}
           position={point.coordinates}
-          draggable
-          onClick={(event) => onWaypointClick(point, event)}
+          draggable={allowWaypointsDragging}
+          onClick={(event) => onWaypointClick?.(point, event)}
           onDragEnd={({ latLng }) => {
             if (!latLng) {
               return;
