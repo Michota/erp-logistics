@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RoutePointListOverlay } from "./~$routeId/components/RoutePointListOverlay";
 import { NavigationIcon, PhoneCallIcon, NotebookPenIcon, AlertOctagonIcon } from "lucide-react";
 import { openExternalMaps } from "./~$routeId/utils/openExternalMaps";
+import { callToNumber } from "./~$routeId/utils/callToNumber";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -50,7 +51,7 @@ function RouteComponent() {
             icon: NavigationIcon,
           },
           {
-            action: (point) => alert(point.customer.contactInformation.phone),
+            action: (point) => callToNumber(point.customer.contactInformation.phone),
             title: "Call to customer",
             icon: PhoneCallIcon,
           },
