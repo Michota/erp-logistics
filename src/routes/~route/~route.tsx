@@ -1,11 +1,7 @@
-import { GoogleMapsMap } from "@/components/maps/GoogleMapsMap";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { RoutePointStatus } from "@/types/routePoints";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { RouteIcon } from "lucide-react";
 import { useState } from "react";
-import { RoutePointList } from "./~$routeId/components/RoutePointList";
+import { RoutePointListOverlay } from "./~$routeId/components/RoutePointListOverlay";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -43,32 +39,7 @@ function RouteComponent() {
               return newWaypoints;
             })
           }
-        />
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button className="rounded-full absolute right-8 bottom-8">
-            <RouteIcon />
-          </Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Waypoints</SheetTitle>
-            <SheetDescription>
-              <RoutePointList
-                routePointActions={[
-                  { action: (waypoint) => alert(waypoint.title), description: "desc", title: "action 1" },
-                  { action: (waypoint) => alert(waypoint.title), description: "desc", title: "action 2" },
-                ]}
-                routePoints={[
-                  { id: "1", title: "Waypoint 1", status: RoutePointStatus.PASSED },
-                  { id: "2", title: "Waypoint 2", status: RoutePointStatus.CURRENT },
-                  { id: "3", title: "Waypoint 3", status: RoutePointStatus.UPCOMING },
-                ]}
-              />
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
+      <RoutePointListOverlay />
       <Outlet />
     </div>
   );

@@ -1,5 +1,6 @@
 import { type RoutePoint as RoutePointType } from "@/types/routePoints";
 import { RoutePoint, RoutePointAction } from "./RoutePoint";
+import { defaultRoutePointActions } from "../consts/defaultRoutePointActions";
 
 interface RoutePointList {
   routePoints: RoutePointType[];
@@ -7,7 +8,11 @@ interface RoutePointList {
   routePointActions?: RoutePointAction[];
 }
 
-export function RoutePointList({ routePoints, hidePassed, routePointActions }: RoutePointList) {
+export function RoutePointList({
+  routePoints,
+  hidePassed,
+  routePointActions = defaultRoutePointActions,
+}: RoutePointList) {
   return (
     <div className="flex flex-col gap-4">
       {(hidePassed ? routePoints.filter((point) => point.status !== "passed") : routePoints).map((point) => (
