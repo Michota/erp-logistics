@@ -11,13 +11,14 @@ import {
 } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
 import { type RoutePoint } from "@/types/routePoints";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, LucideIcon } from "lucide-react";
 import React from "react";
 import { getPointStatusColor } from "../utils/getPointStatusColor";
 
 export type RoutePointAction = {
   title: string;
   description: string;
+  icon?: LucideIcon;
   action: (point: RoutePoint) => void;
 };
 
@@ -44,7 +45,10 @@ export function RoutePoint({ actions = [], data }: RoutePointProps) {
           {/* in future, the children-like component might be rendered there instead of button-mapping */}
           <div className="flex flex-col gap-4">
             {actions.map((action) => (
-              <Button onClick={() => action.action(data)}>{action.title}</Button>
+              <Button onClick={() => action.action(data)}>
+                {action.icon && <action.icon />}
+                {action.title}
+              </Button>
             ))}
           </div>
           <DrawerFooter className="px-0">
