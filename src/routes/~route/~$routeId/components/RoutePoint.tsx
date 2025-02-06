@@ -17,7 +17,6 @@ import { getPointStatusColor } from "../utils/getPointStatusColor";
 
 export type RoutePointAction = {
   title: string;
-  description: string;
   icon?: LucideIcon;
   action: (point: RoutePoint) => void;
 };
@@ -28,6 +27,8 @@ interface RoutePointProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "id
   actions?: RoutePointAction[];
 }
 
+// TODO: consider whether actions shouldn't be passed and instead just create children RoutePointActions component
+// RoutePointActions may use useQueryData to get information about customers sales etc.
 export function RoutePoint({ actions = [], data }: RoutePointProps) {
   if (actions.length <= 0) {
     return <BasicRoutePoint data={data} />;
@@ -45,9 +46,9 @@ export function RoutePoint({ actions = [], data }: RoutePointProps) {
           {/* in future, the children-like component might be rendered there instead of button-mapping */}
           <div className="flex flex-col gap-4">
             {actions.map((action) => (
-              <Button onClick={() => action.action(data)}>
-                {action.icon && <action.icon />}
-                {action.title}
+              <Button className="flex" onClick={() => action.action(data)}>
+                {action.icon && <action.icon className="mr-auto" />}
+                <span className="inline-block w-full">{action.title}</span>
               </Button>
             ))}
           </div>
