@@ -3,6 +3,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useState } from "react";
 import { RoutePointListOverlay } from "./~$routeId/components/RoutePointListOverlay";
 import { NavigationIcon, PhoneCallIcon, NotebookPenIcon, AlertOctagonIcon } from "lucide-react";
+import { openExternalMaps } from "./~$routeId/utils/openExternalMaps";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -18,6 +19,7 @@ const points = [
   id: i.toString(),
   title: Math.random().toString(),
   status: i > 0 ? RoutePointStatus.UPCOMING : RoutePointStatus.PASSED,
+  customer: { contactInformation: { phone: 123456789 } },
 }));
 
 
@@ -43,7 +45,7 @@ function RouteComponent() {
       <RoutePointListOverlay
         routePointActions={[
           {
-            action: (point) => alert(point.title),
+            action: ({ coordinates: { lat, lng } }) => openExternalMaps([lat, lng]),
             title: "Navigate to customer",
             icon: NavigationIcon,
           },
@@ -63,26 +65,7 @@ function RouteComponent() {
             icon: AlertOctagonIcon,
           },
         ]}
-        routePoints={[
-          {
-            id: "1",
-            title: "Waypoint 1",
-            status: RoutePointStatus.PASSED,
-            customer: { contactInformation: { phone: 123456789 } },
-          },
-          {
-            id: "2",
-            title: "Waypoint 2",
-            status: RoutePointStatus.CURRENT,
-            customer: { contactInformation: { phone: 123456789 } },
-          },
-          {
-            id: "3",
-            title: "Waypoint 3",
-            status: RoutePointStatus.UPCOMING,
-            customer: { contactInformation: { phone: 123456789 } },
-          },
-        ]}
+        routePoints={waypoints}
       />
       <Outlet />
     </div>
