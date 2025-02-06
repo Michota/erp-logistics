@@ -15,21 +15,22 @@ import { CheckIcon, LucideIcon } from "lucide-react";
 import React from "react";
 import { getPointStatusColor } from "../utils/getPointStatusColor";
 
-export type RoutePointAction = {
+export type RoutePointAction<P extends RoutePoint> = {
   title: string;
   icon?: LucideIcon;
-  action: (point: RoutePoint) => void;
+  action: (point: P) => void;
 };
 
-interface RoutePointProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "id" | "title"> {
-  data: RoutePoint;
+interface RoutePointProps<R extends RoutePoint>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "id" | "title"> {
+  data: R;
   index?: number;
-  actions?: RoutePointAction[];
+  actions?: RoutePointAction<R>[];
 }
 
 // TODO: consider whether actions shouldn't be passed and instead just create children RoutePointActions component
 // RoutePointActions may use useQueryData to get information about customers sales etc.
-export function RoutePoint({ actions = [], data }: RoutePointProps) {
+export function RoutePoint<R extends RoutePoint>({ actions = [], data }: RoutePointProps<R>) {
   if (actions.length <= 0) {
     return <BasicRoutePoint data={data} />;
   } else {
@@ -63,7 +64,7 @@ export function RoutePoint({ actions = [], data }: RoutePointProps) {
   }
 }
 
-function BasicRoutePoint({ index, data: { status, title }, className, ...props }: Omit<RoutePointProps, "actions">) {
+function BasicRoutePoint<R extends RoutePoint>({ index, data: { status, title }, className, ...props }: Omit<RoutePointProps<R>, "actions">) {
   return (
     <div className={cn("flex justify-start items-center gap-2 select-none", className)} {...props}>
       <div

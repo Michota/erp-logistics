@@ -2,6 +2,7 @@ import { RoutePointStatus } from "@/types/routePoints";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useState } from "react";
 import { RoutePointListOverlay } from "./~$routeId/components/RoutePointListOverlay";
+import { NavigationIcon, PhoneCallIcon, NotebookPenIcon, AlertOctagonIcon } from "lucide-react";
 
 export const Route = createFileRoute("/route")({
   component: RouteComponent,
@@ -39,7 +40,50 @@ function RouteComponent() {
               return newWaypoints;
             })
           }
-      <RoutePointListOverlay />
+      <RoutePointListOverlay
+        routePointActions={[
+          {
+            action: (point) => alert(point.title),
+            title: "Navigate to customer",
+            icon: NavigationIcon,
+          },
+          {
+            action: (point) => alert(point.customer.contactInformation.phone),
+            title: "Call to customer",
+            icon: PhoneCallIcon,
+          },
+          {
+            action: (point) => alert(point.title),
+            title: "Manage visit",
+            icon: NotebookPenIcon,
+          },
+          {
+            action: (point) => alert(point.title),
+            title: "Report problem",
+            icon: AlertOctagonIcon,
+          },
+        ]}
+        routePoints={[
+          {
+            id: "1",
+            title: "Waypoint 1",
+            status: RoutePointStatus.PASSED,
+            customer: { contactInformation: { phone: 123456789 } },
+          },
+          {
+            id: "2",
+            title: "Waypoint 2",
+            status: RoutePointStatus.CURRENT,
+            customer: { contactInformation: { phone: 123456789 } },
+          },
+          {
+            id: "3",
+            title: "Waypoint 3",
+            status: RoutePointStatus.UPCOMING,
+            customer: { contactInformation: { phone: 123456789 } },
+          },
+        ]}
+      />
       <Outlet />
     </div>
   );
