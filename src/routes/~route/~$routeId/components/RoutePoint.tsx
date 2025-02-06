@@ -46,7 +46,7 @@ export function RoutePoint({ actions = [], data }: RoutePointProps) {
           {/* in future, the children-like component might be rendered there instead of button-mapping */}
           <div className="flex flex-col gap-4">
             {actions.map((action) => (
-              <Button className="flex" onClick={() => action.action(data)}>
+              <Button key={action.title} className="flex" onClick={() => action.action(data)}>
                 {action.icon && <action.icon className="mr-auto" />}
                 <span className="inline-block w-full">{action.title}</span>
               </Button>
