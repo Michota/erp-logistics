@@ -28,21 +28,6 @@ function RouteComponent() {
   const [waypoints, setWaypoints] = useState(points);
   return (
     <div className="w-full h-full bg-red-400">
-        <GoogleMapsMap
-          waypoints={waypoints}
-          onWaypointChange={(updatedWaypoint) =>
-            setWaypoints((currentWaypoints) => {
-              const newWaypoints = [...currentWaypoints];
-              console.log("🚀 ~ setWaypoints ~ newWaypoints:", newWaypoints);
-              const updatedWaypointIndex = newWaypoints.findIndex((waypoint) => waypoint.id === updatedWaypoint.id);
-              if (updatedWaypointIndex === -1) {
-                throw new Error("There is no updated index");
-              }
-
-              newWaypoints[updatedWaypointIndex] = updatedWaypoint;
-              return newWaypoints;
-            })
-          }
       <RoutePointListOverlay
         routePointActions={[
           {

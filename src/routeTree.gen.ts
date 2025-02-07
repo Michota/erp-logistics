@@ -14,7 +14,9 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/~__root'
 import { Route as RouteRouteImport } from './routes/~route/~route'
+import { Route as VisitVisitIdImport } from './routes/~visit/~$visitId'
 import { Route as RouteRouteIdIndexImport } from './routes/~route/~$routeId/~index'
+import { Route as CustomerCustomerIdIndexImport } from './routes/~customer/~$customerId/~index'
 
 // Create Virtual Routes
 
@@ -34,10 +36,22 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/~index.lazy').then((d) => d.Route))
 
+const VisitVisitIdRoute = VisitVisitIdImport.update({
+  id: '/visit/$visitId',
+  path: '/visit/$visitId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const RouteRouteIdIndexRoute = RouteRouteIdIndexImport.update({
   id: '/$routeId/',
   path: '/$routeId/',
   getParentRoute: () => RouteRouteRoute,
+} as any)
+
+const CustomerCustomerIdIndexRoute = CustomerCustomerIdIndexImport.update({
+  id: '/customer/$customerId/',
+  path: '/customer/$customerId/',
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -56,6 +70,20 @@ declare module '@tanstack/react-router' {
       path: '/route'
       fullPath: '/route'
       preLoaderRoute: typeof RouteRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/visit/$visitId': {
+      id: '/visit/$visitId'
+      path: '/visit/$visitId'
+      fullPath: '/visit/$visitId'
+      preLoaderRoute: typeof VisitVisitIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/customer/$customerId/': {
+      id: '/customer/$customerId/'
+      path: '/customer/$customerId'
+      fullPath: '/customer/$customerId'
+      preLoaderRoute: typeof CustomerCustomerIdIndexImport
       parentRoute: typeof rootRoute
     }
     '/route/$routeId/': {
@@ -85,12 +113,16 @@ const RouteRouteRouteWithChildren = RouteRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/route': typeof RouteRouteRouteWithChildren
+  '/visit/$visitId': typeof VisitVisitIdRoute
+  '/customer/$customerId': typeof CustomerCustomerIdIndexRoute
   '/route/$routeId': typeof RouteRouteIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/route': typeof RouteRouteRouteWithChildren
+  '/visit/$visitId': typeof VisitVisitIdRoute
+  '/customer/$customerId': typeof CustomerCustomerIdIndexRoute
   '/route/$routeId': typeof RouteRouteIdIndexRoute
 }
 
@@ -98,26 +130,48 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/route': typeof RouteRouteRouteWithChildren
+  '/visit/$visitId': typeof VisitVisitIdRoute
+  '/customer/$customerId/': typeof CustomerCustomerIdIndexRoute
   '/route/$routeId/': typeof RouteRouteIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/route' | '/route/$routeId'
+  fullPaths:
+    | '/'
+    | '/route'
+    | '/visit/$visitId'
+    | '/customer/$customerId'
+    | '/route/$routeId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/route' | '/route/$routeId'
-  id: '__root__' | '/' | '/route' | '/route/$routeId/'
+  to:
+    | '/'
+    | '/route'
+    | '/visit/$visitId'
+    | '/customer/$customerId'
+    | '/route/$routeId'
+  id:
+    | '__root__'
+    | '/'
+    | '/route'
+    | '/visit/$visitId'
+    | '/customer/$customerId/'
+    | '/route/$routeId/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   RouteRouteRoute: typeof RouteRouteRouteWithChildren
+  VisitVisitIdRoute: typeof VisitVisitIdRoute
+  CustomerCustomerIdIndexRoute: typeof CustomerCustomerIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   RouteRouteRoute: RouteRouteRouteWithChildren,
+  VisitVisitIdRoute: VisitVisitIdRoute,
+  CustomerCustomerIdIndexRoute: CustomerCustomerIdIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -131,7 +185,9 @@ export const routeTree = rootRoute
       "filePath": "~__root.tsx",
       "children": [
         "/",
-        "/route"
+        "/route",
+        "/visit/$visitId",
+        "/customer/$customerId/"
       ]
     },
     "/": {
@@ -142,6 +198,12 @@ export const routeTree = rootRoute
       "children": [
         "/route/$routeId/"
       ]
+    },
+    "/visit/$visitId": {
+      "filePath": "~visit/~$visitId.tsx"
+    },
+    "/customer/$customerId/": {
+      "filePath": "~customer/~$customerId/~index.tsx"
     },
     "/route/$routeId/": {
       "filePath": "~route/~$routeId/~index.tsx",
