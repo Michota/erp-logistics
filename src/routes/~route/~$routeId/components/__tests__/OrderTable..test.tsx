@@ -24,12 +24,8 @@ test("display table columns", () => {
 test("display product prices correctly", () => {
   const { getByTestId } = render(<OrderTable />);
 
-  /* const productValues: number[] = */ products.map((product) => {
+  products.forEach((product) => {
     const productElement = getByTestId(`total-${product.id}-price`);
-
-    if (!productElement) {
-      throw new Error(`There is no element that would represent ${product.name} (id: ${product.id})`);
-    }
 
     const price = Number(productElement.textContent);
 
